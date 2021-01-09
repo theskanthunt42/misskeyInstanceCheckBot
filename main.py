@@ -15,8 +15,8 @@ def getSiteMetas(update: Update, Context: CallbackContext) -> None:
         vaildStats = True
         if vaildStats == True:
             siteURL = userText[7:]
-            siteURL = siteURL.split('//')[-1]
-            getSiteURL = 'https://' + siteURL + '/api/'
+            siteURL = siteURL.split('//')
+            getSiteURL = 'https://' + siteURL[-1] + '/api/'
             getMetasURL = getSiteURL + 'meta/'
             postPayLoad = '{"detail":true}'
             rawGetSitesMetas = requests.post(getMetasURL, data=postPayLoad)
