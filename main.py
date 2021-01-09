@@ -1,8 +1,7 @@
 import logging, sys, os, requests
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-mainAPIURL = 'https://rosehip.moe/api/'
-TOKEN = ''
+TOKEN = '1540673042:AAH0wtKfNnlXd92JGqyXN5gYqgD5hvidXTM'
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
@@ -10,12 +9,13 @@ logger = logging.getLogger(__name__)
 def getSiteMetas(update: Update, Context: CallbackContext) -> None:
     userText = update.message.text
     if len(userText) <= 7:
-        update.message.reply_text('请输入站点网址(不需要包含https://前缀)')
+        update.message.reply_text('请输入站点网址')
         vaildStats = False
     else:
         vaildStats = True
         if vaildStats == True:
             siteURL = userText[7:]
+            siteURL = siteURL.split('//')[-1]
             getSiteURL = 'https://' + siteURL + '/api/'
             getMetasURL = getSiteURL + 'meta/'
             postPayLoad = '{"detail":true}'
@@ -41,7 +41,8 @@ def getSiteMetas(update: Update, Context: CallbackContext) -> None:
                 disableRegistration = handledSiteMetasJSON['disableRegistration']
                 disableLocalTimeline = handledSiteMetasJSON['disableLocalTimeline']
                 disableGlobalTimeline = handledSiteMetasJSON['disableGlobalTimeline']
-                tosURL = handledSiteMetasJSON['tosUrl']
+                if handledSiteMetasJSON['tosUrl'] != '' or None:
+                    tosURL = handledSiteMetasJSON['tosUrl']
                 maxNoteTextLength = str(handledSiteMetasJSON['maxNoteTextLength'])
                 enableRecaptcha = handledSiteMetasJSON['enableRecaptcha']
                 maintainerName = handledSiteMetasJSON['maintainerName']
@@ -55,27 +56,27 @@ def getSiteMetas(update: Update, Context: CallbackContext) -> None:
                 enableDiscordIntegration = handledSiteMetasJSON['enableDiscordIntegration']
                 cacheRemoteFiles = handledSiteMetasJSON['cacheRemoteFiles']
                 proxyRemoteFiles = handledSiteMetasJSON['proxyRemoteFiles']
-                elasticsearch = handledSiteMetasJSON['elasticsearch']
+                elasticsearch = handledSiteMetasJSON['features']['elasticsearch']
                 update.message.reply_text(
                     """
                     Metas of {}:
-                    站点名称：{}
-                    站点描述：{}
-                    站点Misskey版本：{}
-                    TOS地址：{}
-                    站长名称：{}
-                    站长联络邮箱：{}
-                    开启reCaptcha？：{}
-                    开启Elastic Search？：{}
-                    不允许注册？：{}
-                    未开启本地时间线？：{}
-                    未开启远程站点时间线？：{}
-                    最长字数限制：{}
-                    整合Twitter？：{}
-                    整合Github？：{}
-                    整合Discord？：{}
-                    缓存远程站点资源？：{}
-                    代理远程站点资源？：{}
+站点名称： {}
+站点描述： {}
+站点Misskey版本： {}
+ToS地址： {}
+维护者名称： {}
+维护者联络邮箱： {}
+开启reCaptcha？： {}
+开启Elastic Search？： {}
+不允许注册？： {}
+未开启本地时间线？： {}
+未开启远程站点时间线？： {}
+最长字数限制： {}
+整合Twitter？： {}
+整合Github？： {}
+整合Discord？： {}
+缓存远程站点资源？： {}
+代理远程站点资源？： {}
                     """.format(siteURL, name, description, version, tosURL, maintainerName, maintainerEmail, enableRecaptcha, elasticsearch, disableRegistration, disableLocalTimeline, disableGlobalTimeline, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, cacheRemoteFiles, proxyRemoteFiles)
                 )
             else:
@@ -91,12 +92,13 @@ def pingPong(update: Update, Context: CallbackContext) -> None:
 def getCurrentSiteStats(update: Update, Context: CallbackContext) -> None:
     userText = update.message.text
     if len(userText) <= 7:
-        update.message.reply_text('请输入站点网址(不需要包含https://前缀)')
+        update.message.reply_text('请输入站点网址')
         vaildStats = False
     else:
         vaildStats = True
         if vaildStats == True:
             siteURL = userText[7:]
+            siteURL = siteURL.split('//')[-1]
             getSiteURL = 'https://' + siteURL + '/api/'
             getStatsURL = getSiteURL + 'stats/'
             postPayLoad = '{}'
@@ -126,11 +128,11 @@ def getCurrentSiteStats(update: Update, Context: CallbackContext) -> None:
             pass
 def helpCommand(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(
-        '帮助:\n/help: 显示本帮助\n/stats: 获得站点目前状态(stats)\n示范:\n/stats rosehip.moe\n/ping: Pong!\n/metas: 获得站点详细讯息\n示例：\n/metas rosehip.moe\n'
+        '帮助:\n/help: 显示本帮助\n/stats: 获得站点目前状态(stats)\n示范:\n/stats https://rosehip.moe\n/ping: Pong!\n/metas: 获得站点详细讯息\n示例：\n/metas https://rosehip.moe\n'
     )
 def startMessage(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(
-        '使用/help 来获得详细使用说明\n以及网址不要加上https://前缀，默认会加上(因为作者太菜了所以没修正)'
+        '使用/help 来获得详细使用说明'
     )
 def main():
     updater = Updater(token=TOKEN, use_context=True)
