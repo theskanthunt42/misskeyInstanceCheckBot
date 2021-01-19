@@ -6,6 +6,53 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
 logger = logging.getLogger(__name__)
+def getSiteServerInfo(update: Update, Context: CallbackContext) -> None:
+    userText = update.message.text
+    print(userText)
+    if len(userText) <= 12:
+        update.message.reply_text('请输入站点网址')
+        vaildStats = False
+    else:
+        vaildStats = True
+        if vaildStats == True:
+            siteURL = userText[12:].split('//')[-1]
+            getSiteURL = 'https://' + siteURL + '/api/server-info/'
+            rawGetSitesInfo = requests.post(getSiteURL, data='{}')
+            rawGetSitesInfoStatusCode = rawGetSitesInfo.status_code
+            print(f'{rawGetSitesInfoStatusCode} {siteURL} SERVERINFO') #Might do better job than just jam tons of text
+            if rawGetSitesInfoStatusCode == 200:
+                apiStats = True
+            else:
+                apiStats = False
+            if apiStats == True:
+                handledSiteInfoJSON = rawGetSitesInfo.json()
+                serverName = handledSiteInfoJSON['machine']
+                cpuName = handledSiteInfoJSON['cpu']['model']
+                cpuCores = handledSiteInfoJSON['cpu']['cores']
+                totalRAM = handledSiteInfoJSON['mem']['total'] / 1000000
+                fileSystemTotal = handledSiteInfoJSON['fs']['total'] / 100000000 #From Bytes to Gigabytes
+                fileSystemUsed = handledSiteInfoJSON['fs']['used'] / 100000000 #Same as up
+                update.message.reply_text(
+                    f"""
+                    Server Info of {siteURL}:
+机器名称： {serverName}
+处理器： {cpuName}
+核心数： {cpuCores}
+总共RAM大小： {totalRAM} MBytes
+文件系统总大小： {fileSystemTotal} GBytes
+已使用文件系统大小： {fileSystemUsed} GBytes
+                    """
+                )
+            else:
+                update.message.reply_text('Error.\nError code: {}'.format(str(rawGetSitesInfoStatusCode)))
+        else:
+            pass
+
+#def getUserInfoFromSite(update: Update, Context: CallbackContext) -> None:
+#    userText = update.message.text
+#    #Get user info from site  #May add, cancel due to 100 user limit
+def getSiteMetas(update: Update, Context: CallbackContext) -> None:
+    userText = update.message.text
 def getSiteMetas(update: Update, Context: CallbackContext) -> None:
     userText = update.message.text
     if len(userText) <= 7:
@@ -130,6 +177,13 @@ def helpCommand(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(
         '帮助:\n/help: 显示本帮助\n/stats: 获得站点目前状态(stats)\n示范:\n/stats https://rosehip.moe\n/ping: Pong!\n/metas: 获得站点详细讯息\n示例：\n/metas https://rosehip.moe\n'
     )
+
+def showUID(update: Update, context: CallbackContext) -> None:
+    user = update.message.from_user
+    userID = user['id']
+    update.message.reply_text(
+        f'UID: {userID}'
+    )
 def startMessage(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(
         '使用/help 来获得详细使用说明'
@@ -142,6 +196,8 @@ def main():
     dispatcher.add_handler(CommandHandler('stats', getCurrentSiteStats))
     dispatcher.add_handler(CommandHandler('ping', pingPong))
     dispatcher.add_handler(CommandHandler('metas', getSiteMetas))
+    dispatcher.add_handler(CommandHandler('serverinfo', getSiteServerInfo))
+    dispatcher.add_handler(CommandHandler('getuid', showUID))
     updater.start_polling()
     updater.idle()
 
