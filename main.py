@@ -215,7 +215,7 @@ def startMessage(update: Update, context: CallbackContext) -> None:
 def main():
     try:
         with open('config.json', 'r') as f:
-            TokenRead = json.load(f.read)
+            TokenRead = json.load(f.read())
             try:
                 TOKEN = TokenRead['token']
             except IndexError:
