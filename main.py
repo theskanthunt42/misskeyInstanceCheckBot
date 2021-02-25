@@ -215,11 +215,12 @@ def startMessage(update: Update, context: CallbackContext) -> None:
 def main():
     try:
         with open('config.json', 'r') as f:
-            TokenRead = json.load(f.read())
+            fileRead = json.loads(f.read())
             try:
-                TOKEN = TokenRead['token']
+                TOKEN = fileRead['token']
             except IndexError:
                 print("Token is not in config.json")
+                raise SystemError
     except OSError:
         print("Can't read config.json.")
         raise SystemExit
