@@ -5,6 +5,33 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
 logger = logging.getLogger(__name__)
+def blockedInstance(update: Update, Context: CallbackContext) -> None:
+    usertext = update.message.text
+    print(usertext)
+    if len(usertext) <= 18:
+        update.message.reply_text("Please give the instance's url.")
+        vaildstats = False
+    else:
+        vaildstats = True
+        if vaildstats:
+            siteurl = usertext[18:].split('//')[-1]
+            getapiurl = 'https://' + siteurl + '/federation/instances/'
+            raw_api_response = requests.get(getapiurl, data='{"blocked":true, "limit":100}')
+            print(f'{raw_api_response.status_code} {getapiurl} CHECK_BLOCKED')
+            if raw_api_response.status_code == 200:
+                apistats = True
+            else:
+                apistats = False
+            if apistats == True:
+                handled_api_json = raw_api_response.json()
+                for i in handled_api_json:
+                    all_info = all_info + f"{i['host']}\nURL: {i['host']}\nDescription: {i['description']}\nSuspended?: \nMaintainer name: {i['maintainerName']}\nMaintainer email: {i['maintainerEmail']}\nIs suspended: {i['isSuspended']}\nNot Responding: {i['isNotResponding']}\nSoftware: {i['softwareName']}\nVersion: {i['softwareVersion']}\nLast Communicated: {i['lastCommunicatedAt']}\nBlocked at: {i['caughtAt']}\nInfo updated: {i['infoUpdatedAt']}\n\n"
+                update.message.reply_text(f'Instances blocked by {siteurl}\n{all_info}')
+            else:
+                update.message.reply_text('Error.\nError code: {}'.format(str(raw_api_response.status_code)))
+        else:
+            pass
+
 def getSiteServerInfo(update: Update, Context: CallbackContext) -> None:
     userText = update.message.text
     print(userText)
@@ -205,6 +232,7 @@ def main():
     dispatcher.add_handler(CommandHandler('metas', getSiteMetas))
     dispatcher.add_handler(CommandHandler('serverinfo', getSiteServerInfo))
     dispatcher.add_handler(CommandHandler('getuid', showUID))
+    dispatcher.add_handler(CommandHandler('blocked_instance', blockedInstance))
     updater.start_polling()
     updater.idle()
 
