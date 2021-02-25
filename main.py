@@ -10,7 +10,7 @@ def getSiteServerInfo(update: Update, Context: CallbackContext) -> None:
     userText = update.message.text
     print(userText)
     if len(userText) <= 12:
-        update.message.reply_text('请输入站点网址')
+        update.message.reply_text("Please give the instance's url.")
         vaildStats = False
     else:
         vaildStats = True
@@ -35,12 +35,12 @@ def getSiteServerInfo(update: Update, Context: CallbackContext) -> None:
                 update.message.reply_text(
                     f"""
                     Server Info of {siteURL}:
-机器名称： {serverName}
-处理器： {cpuName}
-核心数： {cpuCores}
-总共RAM大小： {totalRAM} MBytes
-文件系统总大小： {fileSystemTotal} GBytes
-已使用文件系统大小： {fileSystemUsed} GBytes
+Server's name: {serverName}
+CPU: {cpuName}
+Core(s) of CPU: {cpuCores}
+Total amount of RAM: {totalRAM} MBytes
+Total amount of filesystem: {fileSystemTotal} GBytes
+Total amount of filesystem that is in use: {fileSystemUsed} GBytes
                     """
                 )
             else:
@@ -53,10 +53,8 @@ def getSiteServerInfo(update: Update, Context: CallbackContext) -> None:
 #    #Get user info from site  #May add, cancel due to 100 user limit
 def getSiteMetas(update: Update, Context: CallbackContext) -> None:
     userText = update.message.text
-def getSiteMetas(update: Update, Context: CallbackContext) -> None:
-    userText = update.message.text
     if len(userText) <= 7:
-        update.message.reply_text('请输入站点网址')
+        update.message.reply_text("Please give instance's url.")
         vaildStats = False
     else:
         vaildStats = True
@@ -94,10 +92,10 @@ def getSiteMetas(update: Update, Context: CallbackContext) -> None:
                 enableRecaptcha = handledSiteMetasJSON['enableRecaptcha']
                 maintainerName = handledSiteMetasJSON['maintainerName']
                 if maintainerName == '':
-                    maintainerName = '未提供'
+                    maintainerName = 'N/A'
                 maintainerEmail = handledSiteMetasJSON['maintainerEmail']
                 if maintainerEmail == '':
-                    maintainerEmail = '未提供'
+                    maintainerEmail = 'N/A'
                 enableTwitterIntegration = handledSiteMetasJSON['enableTwitterIntegration']
                 enableGithubIntegration = handledSiteMetasJSON['enableGithubIntegration']
                 enableDiscordIntegration = handledSiteMetasJSON['enableDiscordIntegration']
@@ -107,23 +105,23 @@ def getSiteMetas(update: Update, Context: CallbackContext) -> None:
                 update.message.reply_text(
                     """
                     Metas of {}:
-站点名称： {}
-站点描述： {}
-站点Misskey版本： {}
-ToS地址： {}
-维护者名称： {}
-维护者联络邮箱： {}
-开启reCaptcha？： {}
-开启Elastic Search？： {}
-不允许注册？： {}
-未开启本地时间线？： {}
-未开启远程站点时间线？： {}
-最长字数限制： {}
-整合Twitter？： {}
-整合Github？： {}
-整合Discord？： {}
-缓存远程站点资源？： {}
-代理远程站点资源？： {}
+Name： {}
+Description： {}
+Misskey version： {}
+ToS url： {}
+Maintainer's name： {}
+Maintainer's email： {}
+Enable reCaptcha?： {}
+Enable Elastic Search?： {}
+Disable sign up?： {}
+Disable local timeline?： {}
+Disable remote timeline?： {}
+Max note lenght： {}
+Enable Twitter Integration?： {}
+Enable Github Integration?： {}
+Enable Discord Integration?： {}
+Enable cache remote instance's files?： {}
+Enable proxy remote instance's files： {}
                     """.format(siteURL, name, description, version, tosURL, maintainerName, maintainerEmail, enableRecaptcha, elasticsearch, disableRegistration, disableLocalTimeline, disableGlobalTimeline, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, cacheRemoteFiles, proxyRemoteFiles)
                 )
             else:
@@ -139,7 +137,7 @@ def pingPong(update: Update, Context: CallbackContext) -> None:
 def getCurrentSiteStats(update: Update, Context: CallbackContext) -> None:
     userText = update.message.text
     if len(userText) <= 7:
-        update.message.reply_text('请输入站点网址')
+        update.message.reply_text("Please give the site's url.")
         vaildStats = False
     else:
         vaildStats = True
@@ -167,7 +165,7 @@ def getCurrentSiteStats(update: Update, Context: CallbackContext) -> None:
                 driveUsageLocal = str(handledGetSitesJSON['driveUsageLocal'])
                 driveUsageRemote = str(handledGetSitesJSON['driveUsageRemote'])
                 update.message.reply_text(
-                    'Stats of {}: \n已知文章总数：{}\n本地文章总数：{}\n已知用户总数：{}\n本地用户总数：{}\n已知站点数：{}\n本站点内容于本站磁盘使用之大小：{}\n远程站点内容于本站磁盘使用之大小：{}'.format(siteURL ,notesCount, originalNotesCount, usersCount, originalUsersCount, instances, driveUsageLocal, driveUsageRemote)
+                    'Stats of {}: \nKnown notes count: {}\nLocal notes count: {}\nKnown users count: {}\nLocal users: {}\nknown instances count: {}\nSize of local content on local drive: {}\nSize of remote instance content on local drive: {}'.format(siteURL ,notesCount, originalNotesCount, usersCount, originalUsersCount, instances, driveUsageLocal, driveUsageRemote)
                 )
             else:
                 update.message.reply_text('Error.\nError code: {}'.format(str(rawGetSitesStatsCode)))
@@ -175,7 +173,7 @@ def getCurrentSiteStats(update: Update, Context: CallbackContext) -> None:
             pass
 def helpCommand(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(
-        '帮助:\n/help: 显示本帮助\n/stats: 获得站点目前状态(stats)\n示范:\n/stats https://rosehip.moe\n/ping: Pong!\n/metas: 获得站点详细讯息\n示例：\n/metas https://rosehip.moe\n'
+        "Help:\n/help: Show this help\n/stats: Get the instance's stats\nExample:\n/stats https://rosehip.moe\n/ping: Pong!\n/metas: Get metas of the instances\nExample: \n/metas https://rosehip.moe\n"
     )
 
 def showUID(update: Update, context: CallbackContext) -> None:
@@ -186,7 +184,7 @@ def showUID(update: Update, context: CallbackContext) -> None:
     )
 def startMessage(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(
-        '使用/help 来获得详细使用说明'
+        'Use /help to see how to deal with this bot.'
     )
 def main():
     updater = Updater(token=TOKEN, use_context=True)
