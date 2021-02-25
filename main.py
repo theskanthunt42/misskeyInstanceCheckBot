@@ -27,7 +27,7 @@ def blockedInstance(update: Update, Context: CallbackContext) -> None:
                 handled_api_json = json.loads(raw_api_response.text)
                 all_info = ''
                 for i in handled_api_json:
-                    all_info = all_info + f"{i['host']}\nURL: {i['host']}\nDescription: {i['description']}\nSuspended?: {i['isSuspended']}\nMaintainer name: {i['maintainerName']}\nMaintainer email: {i['maintainerEmail']}\nIs suspended: {i['isSuspended']}\nNot Responding: {i['isNotResponding']}\nSoftware: {i['softwareName']}\nVersion: {i['softwareVersion']}\nLast Communicated: {i['lastCommunicatedAt']}\nBlocked at: {i['caughtAt']}\nInfo updated: {i['infoUpdatedAt']}\n\n"
+                    all_info = all_info + f"{i['host']}\nURL: {i['host']}\nDescription: {i['description']}\nMaintainer name: {i['maintainerName']}\nMaintainer email: {i['maintainerEmail']}\nIs suspended: {i['isSuspended']}\nNot Responding: {i['isNotResponding']}\nSoftware: {i['softwareName']}\nVersion: {i['softwareVersion']}\nLast Communicated: {i['lastCommunicatedAt']}\nBlocked at: {i['caughtAt']}\nInfo updated: {i['infoUpdatedAt']}\n\n"
                 update.message.reply_text(f'Instances blocked by {siteurl}\n{all_info}')
             else:
                 update.message.reply_text('Error.\nError code: {}'.format(str(raw_api_response.status_code)))
