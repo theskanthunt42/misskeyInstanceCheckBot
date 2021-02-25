@@ -1,7 +1,6 @@
-import logging, sys, os, requests
+import logging, sys, os, requests,json
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-TOKEN = ''
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
@@ -187,6 +186,16 @@ def startMessage(update: Update, context: CallbackContext) -> None:
         'Use /help to see how to deal with this bot.'
     )
 def main():
+    try:
+        with open('config.json', 'r') as f:
+            TokenRead = json.load(f.read)
+            try:
+                TOKEN = TokenRead['token']
+            except IndexError:
+                print("Token is not in config.json")
+    except OSError:
+        print("Can't read config.json.")
+        raise SystemExit
     updater = Updater(token=TOKEN, use_context=True)
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler('start', startMessage))
