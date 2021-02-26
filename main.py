@@ -5,6 +5,28 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
 logger = logging.getLogger(__name__)
+
+def InstanceFedrationCheck(siteurl, api_type):
+    get_api_url = 'https://' + siteurl + '/api/federation/instances/'
+    if api_type == 'blocked':
+        payload = '{"blocked":true, "limit":100}'
+    elif api_type == 'not_responding':
+        payload = '{"notResponding":true, "limit":100}'
+    elif api_type == 'suspended':
+        payload = '{"suspended":true, "limit":100}'
+    #All these function below will might not ended up using anyway
+    elif api_type == 'fedrating':
+        payload = '{"fedrating":true, "limit":100, "sort":"+lastCommunicatedAt"}' #Add sorting here because there will be way too many of these, And a bit confuse why the limit goes to 100
+    elif api_type == 'subscribing':
+        payload = '{"subscribing":true, "limit":100, "sort":"+lastCommunicatedAt"}'
+    elif api_type == 'publishing':
+        payload = '{"publishing":true, "limit":100, "sort":"+lastCommunicatedAt"}'
+    else:
+        return SystemError
+    raw_api_response = requests.post(get_api_url, data=payload)
+    print(f'{raw_api_response.status_code} {get_api_url} CHECK_BLOCKED')
+    return raw_api_response
+
 def blockedInstance(update: Update, Context: CallbackContext) -> None:
     usertext = update.message.text
     print(usertext)
@@ -15,13 +37,15 @@ def blockedInstance(update: Update, Context: CallbackContext) -> None:
         vaildstats = True
         if vaildstats:
             siteurl = usertext[18:].split('//')[-1]
-            getapiurl = 'https://' + siteurl + '/api/federation/instances/'
-            raw_api_response = requests.post(getapiurl, data='{"blocked":true,"limit":100}')
-            print(f'{raw_api_response.status_code} {getapiurl} CHECK_BLOCKED')
+            raw_api_response = InstanceFedrationCheck(siteurl, 'blocked')
             if raw_api_response.status_code == 200:
                 apistats = True
             else:
                 apistats = False
+                if raw_api_response == SystemError:
+                    update.message.reply_text('Internal error: Wrong api type at FedrCheck')
+                else:
+                    pass
             if apistats == True:
                 print(raw_api_response.text) #debug usage
                 handled_api_json = json.loads(raw_api_response.text)
