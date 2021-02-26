@@ -21,7 +21,8 @@ def NotRespondingInstanceCheck(update: Update, Context: CallbackContext) -> None
     else:
         vaildstats = True
         if vaildstats == True:
-            siteurl = usertext[21:].split('//')[-1]
+            siteurl = usertext[22:].split('//')[-1]
+            print(siteurl)
             raw_api_response = InstanceFedrationCheck(
                 siteurl, 'not_responding')
             if raw_api_response.status_code == 200:
