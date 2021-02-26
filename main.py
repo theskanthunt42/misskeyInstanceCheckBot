@@ -272,7 +272,7 @@ Enable Github Integration?： {}
 Enable Discord Integration?： {}
 Enable cache remote instance's files?： {}
 Enable proxy remote instance's files： {}
-                    """.format(siteURL, name, description, version, tosURL, maintainerName, maintainerEmail, enableRecaptcha, elasticsearch, disableRegistration, disableLocalTimeline, disableGlobalTimeline, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, cacheRemoteFiles, proxyRemoteFiles)
+                    """.format(siteURL[-1], name, description, version, tosURL, maintainerName, maintainerEmail, enableRecaptcha, elasticsearch, disableRegistration, disableLocalTimeline, disableGlobalTimeline, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, cacheRemoteFiles, proxyRemoteFiles)
                 )
             else:
                 update.message.reply_text(
@@ -332,7 +332,7 @@ def getCurrentSiteStats(update: Update, Context: CallbackContext) -> None:
 
 def helpCommand(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(
-        "Help:\n/help: Show this help\n/stats: Get the instance's stats\nExample:\n/stats https://rosehip.moe\n/ping: Pong!\n/metas: Get metas of the instances\nExample: \n/metas https://rosehip.moe\n"
+        "Help:\n/help: Show this help\n/stats: Get the instance's stats\nExample:\n/stats https://misskey.io\n/ping: Pong!\n/metas: Get metas of the instances\nExample: \n/metas https://misskey.io\n"
     )
 
 
