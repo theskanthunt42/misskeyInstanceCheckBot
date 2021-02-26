@@ -31,6 +31,10 @@ def blockedInstance(update: Update, Context: CallbackContext) -> None:
                 update.message.reply_text(f'Instances blocked by {siteurl}\n{all_info}')
             else:
                 update.message.reply_text('Error.\nError code: {}'.format(str(raw_api_response.status_code)))
+                if raw_api_response.status_code == 500:
+                    update.message.reply_text("The target instance might haven't block any instance yet.")
+                else:
+                    pass
         else:
             pass
 
