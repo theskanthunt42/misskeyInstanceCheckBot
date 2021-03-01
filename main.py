@@ -1,6 +1,7 @@
 """Load Messages and log errors"""
 import logging
 import json
+import os
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import external_functions.blocked_domains
 import external_functions.specs
@@ -41,7 +42,15 @@ def whoami(update, context):
     """Echo user information"""
     user_info = update.message.from_user
     echo_title = "Who are you:\n\n"
-    echo_dname = f"Display name: {user_info['first_name']} {user_info['last_name']}\n"
+    if user_info['first_name'] == 'None':
+        user_first_name = ' '
+    else:
+        user_first_name = user_info['first_name']
+    if user_info['last_name'] == 'None':
+        user_last_name = ' '
+    else:
+        user_last_name = user_info['last_name']
+    echo_dname = f"Display name: {user_first_name} {user_last_name}\n"
     echo_uname = f"Username: {user_info['username']}\n"
     echo_langue = f"Display language: {user_info['language_code']}\n"
     echo_uid = f"UID: {user_info['id']}\n"
@@ -69,6 +78,7 @@ def blocked(update, context):
         with open("cache_blocked.txt", "w", encoding="utf-8") as text_file:
             text_file.write(response_text)
         update.message.reply_document(open("cache_blocked.txt", 'rb'))
+        os.remove('cache_blocked.txt')
 
 def suspended(update, context):
     #pylint: disable=unused-argument
@@ -80,6 +90,8 @@ def suspended(update, context):
         with open("cache_suspended.txt", "w", encoding="utf-8") as text_file:
             text_file.write(response_text)
         update.message.reply_document(open("cache_suspended.txt", 'rb'))
+        #remove cache file after sending it
+        os.remove('cache_suspended.txt')
 
 def specs(update, context):
     #pylint: disable=unused-argument
@@ -91,6 +103,7 @@ def specs(update, context):
         with open("cache_about.txt", "w", encoding="utf-8") as text_file:
             text_file.write(response_text)
         update.message.reply_document(open("cache_about.txt", 'rb'))
+        os.remove('cache_about.txt')
 
 def statistics(update, context):
     #pylint: disable=unused-argument
@@ -102,6 +115,7 @@ def statistics(update, context):
         with open("cache_stats.txt", "w", encoding="utf-8") as text_file:
             text_file.write(response_text)
         update.message.reply_document(open("cache_stats.txt", 'rb'))
+        os.remove('cache_stats.txt')
 
 def tokenization():
     """Read token from specified location."""
