@@ -1,388 +1,103 @@
+"""Load Messages and log errors"""
 import logging
-import sys
-import os
-import requests
 import json
-from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+import external_functions.blocked_domains
+import external_functions.specs
+import external_functions.statistics
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', # Enable logging
+                    level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+def start(update, context):
+    #pylint: disable=unused-argument
+    """Reply /start is issued."""
+    update.message.reply_text('Hi! Send /help to learn more.')
 
-def NotRespondingInstanceCheck(update: Update, Context: CallbackContext) -> None:
-    usertext = update.message.text
-    #chatid = update.message.chat_id
-    print(usertext)
-    if len(usertext) <= 22:
-        update.message.reply_text("Please give the instance's url.")
-        vaildstats = False
-    else:
-        vaildstats = True
-        if vaildstats == True:
-            siteurl = usertext[22:].split('//')[-1]
-            print(siteurl)
-            raw_api_response = InstanceFedrationCheck(
-                siteurl, 'not_responding')
-            if raw_api_response.status_code == 200:
-                apistats = True
-            else:
-                apistats = False
-                if raw_api_response == SystemError:
-                    update.message.reply_text(
-                        'Internal error: Wrong api type at FedrCheck while running nriChk')
-                    print(
-                        'Internal error: Wrong api type at FedrCheck while running nriChk')
-                else:
-                    raise SystemError
-            if apistats == True:
-                print(raw_api_response.text)
-                handled_api_json = json.loads(raw_api_response.text)
-                all_info = ''
-                for i in handled_api_json:
-                    all_info = all_info + f"{i['host']}\nName: {i['name']}\nURL: {i['host']}\nSoftware: {i['softwareName']}\nVersion: {i['softwareVersion']}\nDescription: {i['description']}\nSuspended by instance?: {i['isSuspended']}\nMaintainer name: {i['maintainerName']}\nMaintainer email: {i['maintainerEmail']}\nLast communication: {i['lastCommunicatedAt']}\nLatest request sent at: {i['latestRequestSentAt']}\nLatest status: {i['latestStatus']}\n" + "\n\n"
-                if len(all_info) > 4096:
-                    send_file = True
-                    saveloca = os.getcwd() + f'/cache/NRIC_{siteurl}.txt'
-                    with open(saveloca, 'w') as f:
-                        f.write(all_info)
-                    update.message.reply_document(open(saveloca, 'rb'))
-                else:
-                    send_file = False
-                    update.message.reply_text(
-                        f'Instances that reported Not Responding by {siteurl}\n{all_info}')
-                # Clean job
-                if send_file == True:
-                    os.remove(saveloca)
-                    print(f'Cache file: {saveloca} deleted!')
-                else:
-                    pass
-            else:
-                update.message.reply_text('Error.\nError code: {}'.format(
-                    str(raw_api_response.status_code)))
-                if raw_api_response.status_code == 500:
-                    update.message.reply_text(
-                        "The target instance might haven't experience any Not Response instance yet")
-                else:
-                    pass
-        else:
-            pass
+def help(update, context):
+    #pylint: disable=unused-argument
+    """Send a message when the command /help is issued."""
+    update.message.reply_text("Command Index:\n\n"
+                                "/help - Command Manual\n"
+                                "/stats - Show targeted instance statistics\n"
+                                "/ping - Pong!\n"
+                                "/specs - Show targeted instance hardware specfications\n"
+                                "/blocked_by - Show domains blocked by targted instance\n"
+                                "Syntax: {/command} {example_instance.com}\n"
+                                "Example: /meta rosehip.moe")
 
+def echo(update, context):
+    #pylint: disable=unused-argument
+    """Echo the user message."""
+    update.message.reply_text(f"{update.message.text} is not a recognized command.")
 
-def InstanceFedrationCheck(siteurl, api_type):
-    get_api_url = 'https://' + siteurl + '/api/federation/instances/'
-    if api_type == 'blocked':
-        payload = '{"blocked":true, "limit":100}'
-    elif api_type == 'not_responding':
-        payload = '{"notResponding":true, "limit":100}'
-    elif api_type == 'suspended':
-        payload = '{"suspended":true, "limit":100}'
-    # All these function below will might not ended up using anyway
-    elif api_type == 'fedrating':
-        # Add sorting here because there will be way too many of these, And a bit confuse why the limit goes to 100
-        payload = '{"fedrating":true, "limit":100, "sort":"+lastCommunicatedAt"}'
-    elif api_type == 'subscribing':
-        payload = '{"subscribing":true, "limit":100, "sort":"+lastCommunicatedAt"}'
-    elif api_type == 'publishing':
-        payload = '{"publishing":true, "limit":100, "sort":"+lastCommunicatedAt"}'
-    else:
-        return SystemError
-    raw_api_response = requests.post(get_api_url, data=payload)
-    print(f'{raw_api_response.status_code} {get_api_url} CHECK_BLOCKED')
-    return raw_api_response
+def error(update, context):
+    #pylint: disable=unused-argument
+    """Log Errors caused by Updates."""
+    logger.warning('Update "%s" caused error "%s"', update, context.error)
 
-
-def blockedInstance(update: Update, Context: CallbackContext) -> None:
-    usertext = update.message.text
-    print(usertext)
-    if len(usertext) <= 18:
-        update.message.reply_text("Please give the instance's url.")
-        vaildstats = False
-    else:
-        vaildstats = True
-        if vaildstats:
-            siteurl = usertext[18:].split('//')[-1]
-            raw_api_response = InstanceFedrationCheck(siteurl, 'blocked')
-            if raw_api_response.status_code == 200:
-                apistats = True
-            else:
-                apistats = False
-                if raw_api_response == SystemError:
-                    update.message.reply_text(
-                        'Internal error: Wrong api type at FedrCheck while running blocChk')
-                    print(
-                        'Internal error: Wrong api type at FedrCheck while running blocChk')
-                else:
-                    pass
-            if apistats == True:
-                print(raw_api_response.text)  # debug usage
-                handled_api_json = json.loads(raw_api_response.text)
-                all_info = ''
-                for i in handled_api_json:
-                    all_info = all_info + f"{i['host']}\nName: {i['name']}\nURL: {i['host']}\nDescription: {i['description']}\nMaintainer name: {i['maintainerName']}\nMaintainer email: {i['maintainerEmail']}\nIs suspended: {i['isSuspended']}\nNot Responding: {i['isNotResponding']}\nSoftware: {i['softwareName']}\nVersion: {i['softwareVersion']}\nLast Communicated: {i['lastCommunicatedAt']}\nBlocked at: {i['caughtAt']}\nInfo updated: {i['infoUpdatedAt']}\n\n"
-                if len(all_info) > 4096:
-                    send_file = True
-                    saveloca = os.getcwd() + f'/cache/BI_{siteurl}.txt'
-                    with open(saveloca, 'w') as f:
-                        f.write(all_info)
-                    update.message.reply_document(open(saveloca, 'rb'))
-                else:
-                    send_file = False
-                    update.message.reply_text(
-                        f'Instances blocked by {siteurl}\n{all_info}')
-                if send_file == True:
-                    os.remove(saveloca)
-                    print(f'Cache file: {saveloca} deleted!')
-                else:
-                    pass
-            else:
-                update.message.reply_text('Error.\nError code: {}'.format(
-                    str(raw_api_response.status_code)))
-                if raw_api_response.status_code == 500:
-                    update.message.reply_text(
-                        "The target instance might haven't block any instance yet.")
-                else:
-                    pass
-        else:
-            pass
-
-
-def getSiteServerInfo(update: Update, Context: CallbackContext) -> None:
-    userText = update.message.text
-    print(userText)
-    if len(userText) <= 12:
-        update.message.reply_text("Please give the instance's url.")
-        vaildStats = False
-    else:
-        vaildStats = True
-        if vaildStats == True:
-            siteURL = userText[12:].split('//')[-1]
-            getSiteURL = 'https://' + siteURL + '/api/server-info/'
-            rawGetSitesInfo = requests.post(getSiteURL, data='{}')
-            rawGetSitesInfoStatusCode = rawGetSitesInfo.status_code
-            # Might do better job than just jam tons of text
-            print(f'{rawGetSitesInfoStatusCode} {siteURL} SERVERINFO')
-            if rawGetSitesInfoStatusCode == 200:
-                apiStats = True
-            else:
-                apiStats = False
-            if apiStats == True:
-                handledSiteInfoJSON = rawGetSitesInfo.json()
-                serverName = handledSiteInfoJSON['machine']
-                cpuName = handledSiteInfoJSON['cpu']['model']
-                cpuCores = handledSiteInfoJSON['cpu']['cores']
-                totalRAM = handledSiteInfoJSON['mem']['total'] / 1000000
-                # From Bytes to Gigabytes
-                fileSystemTotal = handledSiteInfoJSON['fs']['total'] / 100000000
-                # Same as up
-                fileSystemUsed = handledSiteInfoJSON['fs']['used'] / 100000000
-                update.message.reply_text(
-                    f"""
-                    Server Info of {siteURL}:
-Server's name: {serverName}
-CPU: {cpuName}
-Core(s) of CPU: {cpuCores}
-Total amount of RAM: {totalRAM} MBytes
-Total amount of filesystem: {fileSystemTotal} GBytes
-Total amount of filesystem that is in use: {fileSystemUsed} GBytes
-                    """
-                )
-            else:
-                update.message.reply_text(
-                    'Error.\nError code: {}'.format(str(rawGetSitesInfoStatusCode)))
-        else:
-            pass
-
-# def getUserInfoFromSite(update: Update, Context: CallbackContext) -> None:
-#    userText = update.message.text
-#    #Get user info from site  #May add, cancel due to 100 user limit
-#    #Might become the "Top user from instance" later
-
-
-def getSiteMetas(update: Update, Context: CallbackContext) -> None:
-    userText = update.message.text
-    if len(userText) <= 7:
-        update.message.reply_text("Please give instance's url.")
-        vaildStats = False
-    else:
-        vaildStats = True
-        if vaildStats == True:
-            siteURL = userText[7:]
-            siteURL = siteURL.split('//')
-            getSiteURL = 'https://' + siteURL[-1] + '/api/'
-            getMetasURL = getSiteURL + 'meta/'
-            postPayLoad = '{"detail":true}'
-            rawGetSitesMetas = requests.post(getMetasURL, data=postPayLoad)
-            rawGetSitesMetasCode = rawGetSitesMetas.status_code
-            print(rawGetSitesMetasCode)
-            print(rawGetSitesMetas.text)
-            if rawGetSitesMetasCode == 200:
-                apiStats = True
-            else:
-                apiStats = False
-            if apiStats == True:
-                handledSiteMetasJSON = rawGetSitesMetas.json()
-                version = handledSiteMetasJSON['version']
-                name = handledSiteMetasJSON['name']
-                description = handledSiteMetasJSON['description']
-#                annoCount = len(handledSiteMetasJSON['announcements'])
-#                annoAll = ''
-#                for anno in annoCount - 1:
-#                    title = handledSiteMetasJSON['announcements'][anno][0]
-#                    text = handledSiteMetasJSON['announcements'][anno][1]
-#                    annoAll = annoAll + '公告：{}\n内容：{}\n\n'.format(title, text)
-                disableRegistration = handledSiteMetasJSON['disableRegistration']
-                disableLocalTimeline = handledSiteMetasJSON['disableLocalTimeline']
-                disableGlobalTimeline = handledSiteMetasJSON['disableGlobalTimeline']
-                if handledSiteMetasJSON['tosUrl'] != '' or None:
-                    tosURL = handledSiteMetasJSON['tosUrl']
-                maxNoteTextLength = str(
-                    handledSiteMetasJSON['maxNoteTextLength'])
-                enableRecaptcha = handledSiteMetasJSON['enableRecaptcha']
-                maintainerName = handledSiteMetasJSON['maintainerName']
-                if maintainerName == '':
-                    maintainerName = 'N/A'
-                maintainerEmail = handledSiteMetasJSON['maintainerEmail']
-                if maintainerEmail == '':
-                    maintainerEmail = 'N/A'
-                enableTwitterIntegration = handledSiteMetasJSON['enableTwitterIntegration']
-                enableGithubIntegration = handledSiteMetasJSON['enableGithubIntegration']
-                enableDiscordIntegration = handledSiteMetasJSON['enableDiscordIntegration']
-                cacheRemoteFiles = handledSiteMetasJSON['cacheRemoteFiles']
-                proxyRemoteFiles = handledSiteMetasJSON['proxyRemoteFiles']
-                elasticsearch = handledSiteMetasJSON['features']['elasticsearch']
-                update.message.reply_text(
-                    """
-                    Metas of {}:
-Name： {}
-Description： {}
-Misskey version： {}
-ToS url： {}
-Maintainer's name： {}
-Maintainer's email： {}
-Enable reCaptcha?： {}
-Enable Elastic Search?： {}
-Disable sign up?： {}
-Disable local timeline?： {}
-Disable remote timeline?： {}
-Max note lenght： {}
-Enable Twitter Integration?： {}
-Enable Github Integration?： {}
-Enable Discord Integration?： {}
-Enable cache remote instance's files?： {}
-Enable proxy remote instance's files： {}
-                    """.format(siteURL[-1], name, description, version, tosURL, maintainerName, maintainerEmail, enableRecaptcha, elasticsearch, disableRegistration, disableLocalTimeline, disableGlobalTimeline, maxNoteTextLength, enableTwitterIntegration, enableGithubIntegration, enableDiscordIntegration, cacheRemoteFiles, proxyRemoteFiles)
-                )
-            else:
-                update.message.reply_text(
-                    'Error.\nError code: {}'.format(str(rawGetSitesMetasCode)))
-        else:
-            pass
-
-
-def pingPong(update: Update, Context: CallbackContext) -> None:
+def ping(update, context):
+    #pylint: disable=unused-argument
+    """Reply Pong if Ping is sent"""
     update.message.reply_text('Pong!')
-    userText = update.message.text
-    print(userText)
 
-
-def getCurrentSiteStats(update: Update, Context: CallbackContext) -> None:
-    userText = update.message.text
-    if len(userText) <= 7:
-        update.message.reply_text("Please give the site's url.")
-        vaildStats = False
+def blocked(update, context):
+    #pylint: disable=unused-argument
+    """List domains blocked by targeted instance."""
+    response_text = external_functions.blocked_domains.Main(update.message.text)
+    if len(response_text) <= 4096:
+        update.message.reply_text(response_text)
     else:
-        vaildStats = True
-        if vaildStats == True:
-            siteURL = userText[7:]
-            siteURL = siteURL.split('//')[-1]
-            getSiteURL = 'https://' + siteURL + '/api/'
-            getStatsURL = getSiteURL + 'stats/'
-            postPayLoad = '{}'
-            rawGetSitesStats = requests.post(getStatsURL, data=postPayLoad)
-            rawGetSitesStatsCode = rawGetSitesStats.status_code
-            print(rawGetSitesStatsCode)
-            print(rawGetSitesStats.text)
-            if rawGetSitesStatsCode == 200:
-                apiStats = True
-            else:
-                apiStats = False
-            if apiStats == True:
-                handledGetSitesJSON = rawGetSitesStats.json()
-                notesCount = str(handledGetSitesJSON['notesCount'])
-                originalNotesCount = str(
-                    handledGetSitesJSON['originalNotesCount'])
-                usersCount = str(handledGetSitesJSON['usersCount'])
-                originalUsersCount = str(
-                    handledGetSitesJSON['originalUsersCount'])
-                instances = str(handledGetSitesJSON['instances'])
-                driveUsageLocal = str(handledGetSitesJSON['driveUsageLocal'])
-                driveUsageRemote = str(handledGetSitesJSON['driveUsageRemote'])
-                update.message.reply_text(
-                    'Stats of {}: \nKnown notes count: {}\nLocal notes count: {}\nKnown users count: {}\nLocal users: {}\nknown instances count: {}\nSize of local content on local drive: {}\nSize of remote instance content on local drive: {}'.format(
-                        siteURL, notesCount, originalNotesCount, usersCount, originalUsersCount, instances, driveUsageLocal, driveUsageRemote)
-                )
-            else:
-                update.message.reply_text(
-                    'Error.\nError code: {}'.format(str(rawGetSitesStatsCode)))
-        else:
-            pass
+        with open("cache_blocked.txt", "w", encoding="utf-8") as text_file:
+            text_file.write(response_text)
+        update.message.reply_document(open("cache_blocked.txt", 'rb'))
 
 
-def helpCommand(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text(
-        "Help:\n/help: Show this help\n/stats: Get the instance's stats\nExample:\n/stats https://misskey.io\n/ping: Pong!\n/metas: Get metas of the instances\nExample: \n/metas https://misskey.io\n"
-    )
+def specs(update, context):
+    #pylint: disable=unused-argument
+    """List domains blocked by targeted instance."""
+    response_text = external_functions.specs.Main(update.message.text)
+    if len(response_text) <= 4096:
+        update.message.reply_text(response_text)
+    else:
+        with open("cache_about.txt", "w", encoding="utf-8") as text_file:
+            text_file.write(response_text)
+        update.message.reply_document(open("cache_about.txt", 'rb'))
 
+def statistics(update, context):
+    #pylint: disable=unused-argument
+    """List domains blocked by targeted instance."""
+    response_text = external_functions.statistics.Main(update.message.text)
+    if len(response_text) <= 4096:
+        update.message.reply_text(response_text)
+    else:
+        with open("cache_stats.txt", "w", encoding="utf-8") as text_file:
+            text_file.write(response_text)
+        update.message.reply_document(open("cache_stats.txt", 'rb'))
 
-def showUID(update: Update, context: CallbackContext) -> None:
-    user = update.message.from_user
-    userID = user['id']
-    name = f"{user['first_name']} {user['last_name']}"
-    is_bot = user['is_bot']
-    username = user['username']
-    lang = user['language_code']
-    chatid = update.message.chat_id
-    print(user)
-    update.message.reply_text(
-        f'Name: {name}\nUsername: {username}\nBot: {is_bot}\nLanguage: {lang}\nUID: {userID}\nChat ID: {chatid}'
-    )
-
-
-def startMessage(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text(
-        'Use /help to see how to deal with this bot.'
-    )
-
+def tokenization():
+    """Read token from specified location."""
+    with open('config.json', 'r') as token_container:
+        token_variable = json.loads(token_container.read())
+        key = token_variable['token']
+        return key
 
 def main():
-    try:
-        with open('config.json', 'r') as f:
-            fileRead = json.loads(f.read())
-            try:
-                TOKEN = fileRead['token']
-            except IndexError:
-                print("Token is not in config.json")
-                raise SystemError
-    except OSError:
-        print("Can't read config.json.")
-        raise SystemExit
-    updater = Updater(token=TOKEN, use_context=True)
-    dispatcher = updater.dispatcher
-    dispatcher.add_handler(CommandHandler('start', startMessage))
-    dispatcher.add_handler(CommandHandler('help', helpCommand))
-    dispatcher.add_handler(CommandHandler('stats', getCurrentSiteStats))
-    dispatcher.add_handler(CommandHandler('ping', pingPong))
-    dispatcher.add_handler(CommandHandler('metas', getSiteMetas))
-    dispatcher.add_handler(CommandHandler('serverinfo', getSiteServerInfo))
-    dispatcher.add_handler(CommandHandler('getuid', showUID))
-    dispatcher.add_handler(CommandHandler('blocked_instance', blockedInstance))
-    dispatcher.add_handler(CommandHandler(
-        'not_respond_instance', NotRespondingInstanceCheck))
-    updater.start_polling()
-    updater.idle()
+    """Start the bot."""
+    updater = Updater(tokenization(), use_context=True)
 
+    updater.dispatcher.add_handler(CommandHandler("start", start)) #Command handler
+    updater.dispatcher.add_handler(CommandHandler("help", help))
+    updater.dispatcher.add_handler(CommandHandler("ping", ping))
+    updater.dispatcher.add_handler(CommandHandler("blocked_by", blocked))
+    updater.dispatcher.add_handler(CommandHandler("specs", specs))
+    updater.dispatcher.add_handler(CommandHandler("stats", statistics)) #Command handler
+
+    updater.dispatcher.add_handler(MessageHandler(Filters.text, echo)) #Echo unprocessable msgs
+    updater.dispatcher.add_error_handler(error) # log all errors
+    updater.start_polling() # Start the Bot
+    updater.idle()
 
 if __name__ == '__main__':
     main()
