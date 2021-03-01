@@ -3,7 +3,7 @@ import requests
 
 def Main(command_string):
     """Search blocked domains by a Misskey Instance"""
-    if len(command_string) <= 16:
+    if len(command_string) <= 1:
         reply_text = "Invalid instance url!"
     else:
         try:
@@ -13,10 +13,10 @@ def Main(command_string):
             print(instance_availability)
             if instance_availability == 200:
                 api_target = f"https://{instance_url}/api/federation/instances/"
-                api_payload = '{"blocked":true, "limit":100}'
+                api_payload = '{"suspended":true, "limit":30}'
                 api_result = requests.post(api_target, data=api_payload).json()
                 expected_reply = ""
-                expected_title = f"Instances blocked by {instance_url}:\n"
+                expected_title = f"Instances suspended by {instance_url}:\n"
                 expected_lnbreak = " \n"
                 for x in range(len(api_result)):
 
@@ -24,7 +24,7 @@ def Main(command_string):
                     expected_description = f"Description: {api_result[x]['description']}\n"
                     expected_software = f"Software: {api_result[x]['softwareName']}\n"
                     expected_version = f"Version: {api_result[x]['softwareVersion']}\n"
-                    expected_block_date = f"Blocked on: {api_result[x]['infoUpdatedAt']}\n"
+                    expected_block_date = f"Suspended on: {api_result[x]['infoUpdatedAt']}\n"
                     expected_reply += (expected_host
                                         + expected_description
                                         + expected_software
@@ -38,4 +38,3 @@ def Main(command_string):
             print(warning_feedback)
             reply_text = "Instance unavailable!"
     return reply_text
-    
