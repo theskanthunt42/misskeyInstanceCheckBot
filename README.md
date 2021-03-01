@@ -9,6 +9,7 @@ Features:
 - (If provided)CPU model/cores and Server domain name(System side), RAM amount, Filesystem infomation(size)
 - ~~Hidden features:~~
     - ~~/getuid~~
+
 <br>
 
 ~~Just a pile of noob code.~~
