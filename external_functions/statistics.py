@@ -18,9 +18,15 @@ def Main(command_string):
             if instance_availability == 200:
                 api_target = f"https://{instance_url}/api/stats/"
                 api_result = requests.post(api_target).json()
+                #Online User Count goes here
+                user_api_target = f"https://{instance_url}/api/get-online-users-count/"
+                user_api_result = requests.post(user_api_target).json()
                 print(api_result)
+                print(user_api_result)
 
                 expected_title = f"Statistics of {instance_url}:\n"
+                expected_current_online_user = \
+                    f"Current online users: {user_api_result['count']}\n"
                 expected_global_notes = \
                     f"Total Notes(global included): {api_result['notesCount']}\n"
                 expected_local_notes = \
@@ -39,6 +45,7 @@ def Main(command_string):
 
                 reply_text = (expected_title
                                 + " \n"
+                                + expected_current_online_user
                                 + expected_global_notes
                                 + expected_local_notes
                                 + expected_global_users

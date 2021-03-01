@@ -4,11 +4,9 @@ A Telegram bot that use to lookup a Misskey instance's infomations using their a
 Features:
 <br>
 - User/Notes amount(Both local and remote)
-- Blocked/Not Responding/Suspended(developing) instances
+- Blocked/Not Responding/Suspended instances
 - Instance's Name/Maintainer/Note lenght limitation etc...
 - (If provided)CPU model/cores and Server domain name(System side), RAM amount, Filesystem infomation(size)
-- ~~Hidden features:~~
-    - ~~/getuid~~
 
 <br>
 
