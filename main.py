@@ -6,6 +6,7 @@ import external_functions.blocked_domains
 import external_functions.specs
 import external_functions.statistics
 import external_functions.suspended_domains
+import external_functions.admin
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', # Enable logging
                     level=logging.INFO)
@@ -111,6 +112,17 @@ def statistics(update, context):
             text_file.write(response_text)
         update.message.reply_document(open("cache_stats.txt", 'rb'))
 
+def admin(update, context):
+    #pylint: disable=unused-argument
+    """List admins on that target instance."""
+    response_text = external_functions.admin.Main(update.message.text)
+    if len(response_text) <= 4096:
+        update.message.reply_text(response_text)
+    else:
+        with open("cache_admin.txt", "w", encoding='utf-8') as text_file:
+            text_file.write(response_text)
+        update.message.reply_document(open("cache_admin.txt", 'rb'))
+
 def tokenization():
     """Read token from specified location."""
     with open('config.json', 'r') as token_container:
@@ -130,6 +142,7 @@ def main():
     updater.dispatcher.add_handler(CommandHandler("stats", statistics))
     updater.dispatcher.add_handler(CommandHandler("whoami", whoami))
     updater.dispatcher.add_handler(CommandHandler("suspended_by", suspended)) #Command handler
+    updater.dispatcher.add_handler(CommandHandler("admins_on", admin))
 
     updater.dispatcher.add_handler(MessageHandler(Filters.text, echo)) #Echo unprocessable msgs
     updater.dispatcher.add_error_handler(error) # log all errors
