@@ -1,7 +1,7 @@
 """requests has already included json, an independent json library become no longer compulsory"""
 import requests
 
-def Main(command_string):
+def Main(command_string): #pylint: disable=invalid-name
     """Search blocked domains by a Misskey Instance"""
     if len(command_string) <= 16:
         reply_text = "Invalid instance url!"
@@ -18,13 +18,13 @@ def Main(command_string):
                 expected_reply = ""
                 expected_title = f"Instances blocked by {instance_url}:\n"
                 expected_lnbreak = " \n"
-                for x in range(len(api_result)):
+                for api_dict in api_result:
 
-                    expected_host = f"------- {api_result[x]['host']} -------\n"
-                    expected_description = f"Description: {api_result[x]['description']}\n"
-                    expected_software = f"Software: {api_result[x]['softwareName']}\n"
-                    expected_version = f"Version: {api_result[x]['softwareVersion']}\n"
-                    expected_block_date = f"Blocked on: {api_result[x]['infoUpdatedAt']}\n"
+                    expected_host = f"------- {api_dict['host']} -------\n"
+                    expected_description = f"Description: { api_dict['description']}\n"
+                    expected_software = f"Software: {api_dict['softwareName']}\n"
+                    expected_version = f"Version: {api_dict['softwareVersion']}\n"
+                    expected_block_date = f"Blocked on: {api_dict['infoUpdatedAt']}\n"
                     expected_reply += (expected_host
                                         + expected_description
                                         + expected_software
@@ -34,7 +34,7 @@ def Main(command_string):
                 reply_text = expected_title + expected_lnbreak + expected_reply
             else:
                 reply_text = "Instance unavailable!"
-        except Exception as warning_feedback:
+        except Exception as warning_feedback: #pylint: disable=broad-except
             print(warning_feedback)
             reply_text = "Instance unavailable!"
     return reply_text

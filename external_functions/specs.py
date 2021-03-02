@@ -1,7 +1,8 @@
 """requests has already included json, an independent json library become no longer compulsory"""
 import requests
+from external_functions import unit_converter as convert
 
-def Main(command_string):
+def Main(command_string): #pylint: disable=invalid-name
     """
     Function to generate expected reply text to /about {instance}
     Usuage:
@@ -22,9 +23,12 @@ def Main(command_string):
 
                 expected_title = f"Specifications of {instance_url}:\n\n"
                 expected_cpu = f"Processor: {api_result['cpu']['model']}\n"
-                expected_ram = f"Installed RAM: {api_result['mem']['total']}Bytes\n"
-                expected_diskspace = f"Storage capacity: {api_result['fs']['total']}Bytes\n"
-                expected_diskused = f"Storage used: {api_result['fs']['used']}Bytes\n"
+                expected_ram = \
+                    f"Installed RAM: {convert.filesize(api_result ['mem']['total'])}\n"
+                expected_diskspace = \
+                    f"Storage capacity: {convert.filesize(api_result['fs']['total'])}\n"
+                expected_diskused = \
+                    f"Storage used: {convert.filesize(api_result['fs']['used'])}\n"
 
                 reply_text = (expected_title
                                 + expected_cpu
@@ -32,7 +36,7 @@ def Main(command_string):
                                 + expected_diskspace
                                 + expected_diskused
                 )
-        except Exception as warning_feedback:
+        except Exception as warning_feedback:   #pylint: disable=broad-except
             print(warning_feedback)
             reply_text = "Instance unavailable!"
     return reply_text

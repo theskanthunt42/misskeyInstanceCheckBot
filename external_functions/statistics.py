@@ -1,7 +1,7 @@
 """requests has already included json, an independent json library become no longer compulsory"""
 import requests
 
-def Main(command_string):
+def Main(command_string): #pylint: disable=invalid-name
     """
     Function to generate expected reply text to /stats {instance}
     Usuage:
@@ -28,13 +28,13 @@ def Main(command_string):
                 expected_current_online_user = \
                     f"Current online users: {user_api_result['count']}\n"
                 expected_global_notes = \
-                    f"Total Notes(global included): {api_result['notesCount']}\n"
+                    f"Global Notes: {api_result['notesCount']}\n"
                 expected_local_notes = \
-                    f"Total Notes(local only): {api_result['originalNotesCount']}\n"
+                    f"Local Notes: {api_result['originalNotesCount']}\n"
                 expected_global_users = \
-                    f"Total users(global included): {api_result['usersCount']}\n"
+                    f"Discovered users: {api_result['usersCount']}\n"
                 expected_local_users = \
-                    f"Total users(local only): {api_result['originalUsersCount']}\n"
+                    f"Local users: {api_result['originalUsersCount']}\n"
                 expected_known_instances  = \
                     f"Discovered Instances: {api_result['instances']}\n"
                 expected_global_content = \
@@ -54,7 +54,7 @@ def Main(command_string):
                                 + expected_global_content
                                 + expected_local_content
                 )
-        except Exception as warning_feedback:
+        except Exception as warning_feedback:   #pylint: disable=broad-except
             print(warning_feedback)
             reply_text = "Instance unavailable!"
     return reply_text

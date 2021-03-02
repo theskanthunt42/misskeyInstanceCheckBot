@@ -1,7 +1,7 @@
+"""requests has already included json, an independent json library become no longer compulsory"""
 import requests
 
-
-def Main(command_string):
+def Main(command_string): #pylint: disable=invalid-name
     """Look up who is the admin on that instance"""
     if len(command_string) <= 11:
         reply_text = 'Invaild instance url!'
@@ -26,13 +26,14 @@ def Main(command_string):
                     expected_create_time = f"Created at {i['createdAt']}\n"
                     expected_last_update = f"Last activity: {i['updatedAt']}\n"
                     expected_description = f"Description: {i['description']}\n"
-                    expected_birthday = f"Birthday: {i['birthday']}"
+                    expected_birthday = f"Birthday: {i['birthday']}\n"
                     expected_location = f"Location: {i['location']}\n"
                     expected_following = f"Following: {i['followingCount']}\n"
                     expected_followers = f"Followers: {i['followersCount']}\n"
                     expected_note_counts = f"Total notes: {i['notesCount']}\n"
                     expected_2fa_stats = f"Two Factor Enable: {i['twoFactorEnabled']}\n"
-                    expected_password_stats = f"Enable password-less login?: {i['usePasswordLessLogin']}\n"
+                    expected_password_stats = \
+                        f"Enable password-less login?: {i['usePasswordLessLogin']}\n"
                     expected_reply += (expected_name
                                        + expected_username
                                        + expected_user_id
@@ -51,7 +52,7 @@ def Main(command_string):
                 reply_text = expected_title + expected_lnbreak + expected_reply + expected_lnbreak
             else:
                 reply_text = 'Instance unavailable!'
-        except Exception as warning_feedback:
+        except Exception as warning_feedback: #pylint: disable=broad-except
             print(warning_feedback)
             reply_text = 'Instance unavailable!'
     return reply_text

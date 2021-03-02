@@ -18,6 +18,7 @@ def start(update, context):
     update.message.reply_text('Hi! Send /help to learn more.')
 
 def help(update, context):
+    #pylint: disable=redefined-builtin
     #pylint: disable=unused-argument
     """Send a message when the command /help is issued."""
     update.message.reply_text("Command Index:\n\n"
@@ -42,21 +43,15 @@ def whoami(update, context):
     #pylint: disable=unused-argument
     """Echo user information"""
     user_info = update.message.from_user
-    echo_title = "Who are you:\n\n"
-    if user_info['first_name'] == 'None':
-        user_first_name = ' '
-    else:
-        user_first_name = user_info['first_name']
-    if user_info['last_name'] == 'None':
-        user_last_name = ' '
-    else:
-        user_last_name = user_info['last_name']
-    echo_dname = f"Display name: {user_first_name} {user_last_name}\n"
+
+    if user_info['last_name'] is None:
+        user_last_name = ''
+
+    echo_dname = f"You're: {user_info['first_name']} {user_last_name}\n\n"
     echo_uname = f"Username: {user_info['username']}\n"
     echo_langue = f"Display language: {user_info['language_code']}\n"
-    echo_uid = f"UID: {user_info['id']}\n"
-    echo_chatid = f"Chat ID: {update.message.chat_id}\n"
-    echo_result = (echo_title + echo_dname + echo_uname + echo_langue + echo_uid + echo_chatid)
+    echo_uid = f"User ID: {user_info['id']}\n"
+    echo_result = (echo_dname + echo_uname + echo_langue + echo_uid )
     update.message.reply_text(echo_result)
 
 def error(update, context):
