@@ -28,9 +28,10 @@ def help(update, context):
                                 "/specs - Show targeted instance hardware specfications\n"
                                 "/blocked_by - Show domains blocked by targeted instance\n"
                                 "/suspended_by - Show domains suspended by targeted instance\n"
+                                "/admins_on - Show who is the admin on targeted instance\n"
                                 " \n"
                                 "Syntax: {/command} {example_instance.com}\n"
-                                "Example: /meta rosehip.moe\n")
+                                "Example: /specs rosehip.moe\n")
 
 def echo(update, context):
     #pylint: disable=unused-argument

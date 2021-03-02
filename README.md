@@ -14,6 +14,6 @@ Features:
 <br>
 Currently still under development(Adding more features)
 <br>
-Can use [This bot](https://t.me/the42misskey_bot) to have a shot
+Can use [This bot](https://t.me/the42misskey_bot) to have a shot(This bot will only use the latest release)
 <br>
 Special thanks: @quterresp and [rosehip.moe](https://rosehip.moe) for providing server
