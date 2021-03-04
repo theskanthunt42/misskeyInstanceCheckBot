@@ -3,3 +3,4 @@ cache_blocked.txt
 config.json
 *.pyc
 config.json
+*.json
