@@ -1,6 +1,6 @@
-external_functions/__pycache__/
-config.json
+
 cache_blocked.txt
-cache_about.txt
-cache_stats.txt
-.vscode/settings.json
+config.json
+*.pyc
+config.json
+*.json
