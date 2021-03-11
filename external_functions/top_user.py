@@ -1,6 +1,8 @@
+"""To parse json from API"""
 import requests
 
-def Main(command_string):
+def Main(command_string): #pylint: disable=invalid-name
+    """To return Top Users as str"""
     if len(command_string) <= 14:
         reply_text = 'Invaild instance url!'
     else:
@@ -11,10 +13,11 @@ def Main(command_string):
             if instance_availability == 200:
                 api_target = f"https://{instance_url}/api/users/"
                 api_payload = '{"limit":5, "sort":"+follower"}'
-                api_result = requests.post(api_target, data=api_payload)
+                api_result = requests.post(api_target, data=api_payload).json()
                 expected_reply = ""
                 expected_title = f"Top 5 users from {instance_url} (Sort by followers):\n"
                 expected_lnbreak = " \n"
+                print(api_result)
                 for i in api_result:
                     expected_name = f"Name: {i['name']}\n"
                     expected_username = f"Username: {i['username']}\n"
@@ -26,7 +29,8 @@ def Main(command_string):
                     expected_admin_stats = f"Is a admin?: {i['isAdmin']}\n"
                     expected_bot_stats = f"Is a bot?: {i['isBot']}\n"
                     expected_last_active = f"Last activity: {i['updatedAt']}\n"
-                    expected_reply += (expected_name
+                    expected_reply += ("======================\n"
+                                       + expected_name
                                        + expected_username
                                        + expected_id
                                        + expected_description
@@ -41,7 +45,7 @@ def Main(command_string):
                 reply_text = expected_title + expected_lnbreak + expected_reply + expected_lnbreak
             else:
                 reply_text = 'Instance unavailable!'
-        except Exception as warning_feedback:
+        except Exception as warning_feedback:  #pylint: disable=broad-except
             print(warning_feedback)
             reply_text = 'Instance unavailable!'
     return reply_text

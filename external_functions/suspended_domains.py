@@ -1,8 +1,7 @@
 """requests has already included json, an independent json library become no longer compulsory"""
 import requests
 
-def Main(command_string):
-    #pylint: disable=invalid-name
+def Main(command_string):  #pylint: disable=invalid-name
     """Search blocked domains by a Misskey Instance"""
     if len(command_string) <= 1:
         reply_text = "Invalid instance url!"

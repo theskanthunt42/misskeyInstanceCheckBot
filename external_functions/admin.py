@@ -7,8 +7,8 @@ def Main(command_string): #pylint: disable=invalid-name
         reply_text = 'Invaild instance url!'
     else:
         try:
-            instance_url = command_string.split(
-                ' ')[-1].split('//')[-1].split('/')[0]
+            instance_url = \
+                command_string.split(' ')[-1].split('//')[-1].split('/')[0]
             instance_availability = requests.get(
                 f'https://{instance_url}').status_code
             print(f'{instance_availability} {instance_url}')
