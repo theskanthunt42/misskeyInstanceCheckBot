@@ -142,6 +142,7 @@ def main():
     updater.dispatcher.add_handler(CommandHandler("trending_users", trending_users))
     updater.dispatcher.add_handler(CommandHandler("suspended_by", suspended))
     updater.dispatcher.add_handler(CommandHandler("admins_on", admin)) #Command handler
+    updater.dispatcher.add_handler(CommandHandler('help_ng', helpNG))
 
     updater.dispatcher.add_handler(MessageHandler(Filters.text, echo)) #Echo unprocessable msgs
     updater.dispatcher.add_error_handler(error) # log all errors
