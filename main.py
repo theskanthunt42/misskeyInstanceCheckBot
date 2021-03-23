@@ -8,6 +8,7 @@ import external_functions.statistics
 import external_functions.suspended_domains
 import external_functions.admin
 import external_functions.top_user
+import external_functions.help_ng
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', # Enable logging
                     level=logging.INFO)
@@ -16,6 +17,11 @@ logger = logging.getLogger(__name__)
 def start(update, context):  #pylint: disable=unused-argument
     """Reply /start is issued."""
     update.message.reply_text('Hi! Send /help to learn more.')
+
+def helpNG(update, context):
+    response_text = external_functions.help_ng
+    update.message.reply_text(response_text)
+
 
 def help(update, context):  #pylint: disable=unused-argument
     #pylint: disable=redefined-builtin
