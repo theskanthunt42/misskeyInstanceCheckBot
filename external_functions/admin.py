@@ -1,4 +1,4 @@
-"""requests has already included json, an independent json library become no longer compulsory"""
+"""To lookup admins of a specific instance"""
 import requests
 
 def Main(command_string): #pylint: disable=invalid-name

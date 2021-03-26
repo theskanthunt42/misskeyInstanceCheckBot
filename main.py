@@ -1,6 +1,5 @@
 """Load Messages and log errors"""
 import logging
-import json
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import external_functions
 
@@ -99,16 +98,9 @@ def trending_users(update, context):  #pylint: disable=unused-argument
             text_file.write(response_text)
         update.message.reply_document(open("cache_trendings.txt", 'rb'))
 
-def tokenization():
-    """Read token from specified location."""
-    with open('config.json', 'r') as token_container:
-        token_variable = json.loads(token_container.read())
-        key = token_variable['token']
-        return key
-
 def main():
     """Start the bot."""
-    updater = Updater(tokenization(), use_context=True)
+    updater = Updater(external_functions.utils.tokenization(), use_context=True)
 
     updater.dispatcher.add_handler(CommandHandler("start", start)) #Command handler
     updater.dispatcher.add_handler(CommandHandler("help", help))
