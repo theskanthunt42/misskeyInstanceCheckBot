@@ -1,10 +1,10 @@
 import requests
-import external_functions.unit_converter as convert
+import external_functions.utils
 #https://rosehip.moe/api-doc#operation/users/stats
 #https://rosehip.moe/api-doc#operation/users/show
 #Command sting should be like:
 #/user_stats [username] [api_host] [remote_host](can be None)
-#username: sth like 
+#username: sth like syuilo
 def main(command_string):
     print(command_string)
     if len(command_string) <= 11 and len(command_string.split(' ')) <= 3:
@@ -22,13 +22,13 @@ def main(command_string):
             print(f'{instance_availability} {instance_url}')
             if instance_availability == 200:
                 get_user_id_api = f'https://{instance_url}/api/users/show'
-                get_user_id_payload = '{"username":"{}"}'.format(username)
+                get_user_id_payload = f'{"username":"{username}"}'
                 try:
                     userid_api_result = requests.post(get_user_id_api, data=get_user_id_payload)
                     if userid_api_result.status_code == 200:
                         userid_api_success = True
                 except Exception as warning_feedback:
-                    uid_get_success = False
+                    userid_api_success = False
                     print(warning_feedback)
                     reply_text = 'Fatal error(Check your username, or instance unavaukable)'
                 if userid_api_success:
@@ -37,11 +37,11 @@ def main(command_string):
                     api_target = f'https://{instance_url}/api/users/stats/'
                     if len(command_string.split(' ')) <= 3:
                         #Default to local instance
-                        api_payload = '{"userId":"{}"}'.format(userid)
+                        api_payload = f'{"userId":"{userid}"}'
                         is_remote_user = False
                     else:
                         #Remote user
-                        api_payload = '{"userId":"{}", "host":"{}"}'.format(userid, remote_instance_url)
+                        api_payload = f'{"userId":"{userid}", "host":"{remote_instance_url}"}'
                         is_remote_user = True
                     api_result = requests.post(f'https://{api_target}/api/users/stats', data=api_payload).json()
                     expected_reply = ''
@@ -51,6 +51,7 @@ def main(command_string):
                     for i in api_result:
                         expected_name = f'Name: {username}\n'
                         expected_uid = f'userId: {userid}\n'
+                        expected_remo_user = f'Is remote user? {is_remote_user}\n'
                         expected_note_counts = f"Notes count: {i['notesCount']}\n"
                         expected_reply_counts = f"Replies count: {i['repliesCount']}\n"
                         expected_replied_counts = f"Replied count: {i['repliedCount']}\n"
@@ -67,10 +68,11 @@ def main(command_string):
                         expected_sent_reactions = f"Sent reactions: {i['sentReactionsCount']}\n"
                         expected_recv_reactions = f"Received reactions: {i['receivedReactionsCount']}\n"
                         expected_files_count = f"Drive files count: {i['driveFilesCount']}\n"
-                        expected_drive_usage = f"Drive usage: {convert.filesize(i['driveUsage'])}\n"
+                        expected_drive_usage = f"Drive usage: {external_functions.utils.filesize(i['driveUsage'])}\n"
                         expected_reply += ("\n"
                                             + expected_name
                                             + expected_uid
+                                            + expected_remo_user
                                             + expected_note_counts
                                             + expected_reply_counts
                                             + expected_replied_counts
