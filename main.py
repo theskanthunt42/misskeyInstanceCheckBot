@@ -2,13 +2,7 @@
 import logging
 import json
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import external_functions.blocked_domains
-import external_functions.specs
-import external_functions.statistics
-import external_functions.suspended_domains
-import external_functions.admin
-import external_functions.top_user
-import external_functions.help_ng
+import external_functions
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', # Enable logging
                     level=logging.INFO)
@@ -18,26 +12,10 @@ def start(update, context):  #pylint: disable=unused-argument
     """Reply /start is issued."""
     update.message.reply_text('Hi! Send /help to learn more.')
 
-def helpNG(update, context):
-    response_text = external_functions.help_ng
-    update.message.reply_text(response_text)
-
-
 def help(update, context):  #pylint: disable=unused-argument
     #pylint: disable=redefined-builtin
     """Send a message when the command /help is issued."""
-    update.message.reply_text("Command Index:\n\n"
-                                "/help - Command Manual\n"
-                                "/stats - Show targeted instance statistics\n"
-                                "/whoami - Show your account infos\n"
-                                "/ping - Pong!\n"
-                                "/specs - Show targeted instance hardware specfications\n"
-                                "/blocked_by - Show domains blocked by targeted instance\n"
-                                "/suspended_by - Show domains suspended by targeted instance\n"
-                                "/admins_on - Show who is the admin on targeted instance\n"
-                                "/trending_users - Show most followed user on targeted instance\n\n"
-                                "Syntax: {/command} {example_instance.com}\n"
-                                "Example: /specs rosehip.moe\n")
+    update.message.reply_text(external_functions.manual.main(update.message.text))
 
 def echo(update, context):  #pylint: disable=unused-argument
     """Echo the user message."""
@@ -50,7 +28,7 @@ def whoami(update, context):  #pylint: disable=unused-argument
     echo_uname = f"Username: {user_info['username']}\n"
     echo_langue = f"Display language: {user_info['language_code']}\n"
     echo_uid = f"User ID: {user_info['id']}\n"
-    echo_result = (echo_dname + echo_uname + echo_langue + echo_uid )
+    echo_result = (echo_dname + echo_uname + echo_langue + echo_uid)
     update.message.reply_text(echo_result)
 
 def error(update, context):  #pylint: disable=unused-argument
@@ -142,7 +120,6 @@ def main():
     updater.dispatcher.add_handler(CommandHandler("trending_users", trending_users))
     updater.dispatcher.add_handler(CommandHandler("suspended_by", suspended))
     updater.dispatcher.add_handler(CommandHandler("admins_on", admin)) #Command handler
-    updater.dispatcher.add_handler(CommandHandler('help_ng', helpNG))
 
     updater.dispatcher.add_handler(MessageHandler(Filters.text, echo)) #Echo unprocessable msgs
     updater.dispatcher.add_error_handler(error) # log all errors

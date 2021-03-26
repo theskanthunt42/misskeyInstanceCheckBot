@@ -3,8 +3,9 @@ import math
 
 def filesize(size_bytes):
     #pylint: disable=invalid-name
-    """Convert filesize into readable human unit system
-    ref: https://stackoverflow.com/a/52002551
+    """
+    Convert filesize into readable human unit system\n
+    ref: https://stackoverflow.com/a/52002551\n
     """
     if size_bytes == 0:
         return "0B"
@@ -15,9 +16,10 @@ def filesize(size_bytes):
     return "%s %s" % (s, size_name[i])
 
 def big_number(num):
-    """Pretty print big numbers.
-    E.g. 1145141919810 -> 1.15T
-    ref: https://stackoverflow.com/a/45846841
+    """
+    Pretty print big numbers.\n
+    E.g. 1145141919810 -> 1.15T\n
+    ref: https://stackoverflow.com/a/45846841\n
     """
     num = float('{:.3g}'.format(num))
     magnitude = 0
