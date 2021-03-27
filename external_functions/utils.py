@@ -38,7 +38,7 @@ def tokenization():
     """
     Read key from config.json and return as string. Used for token configuration in main.py
     """
-    with open(r'.\config.json', 'r') as token_container:
+    with open('config.json', 'r') as token_container:
         token_variable = json.loads(token_container.read())
         key = token_variable['token']
         return key
