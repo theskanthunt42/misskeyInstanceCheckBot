@@ -42,5 +42,3 @@ def tokenization():
         token_variable = json.loads(token_container.read())
         key = token_variable['token']
         return key
-
-print(tokenization())

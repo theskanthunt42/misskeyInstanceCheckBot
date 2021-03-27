@@ -16,6 +16,11 @@ def help(update, context):  #pylint: disable=unused-argument
     """Send a message when the command /help is issued."""
     update.message.reply_text(external_functions.manual.main(update.message.text))
 
+def user_stats(update, context):  #pylint: disable=unused-argument
+    #pylint: disable=redefined-builtin
+    """Send a message when the command /user_stats is issued."""
+    update.message.reply_text(external_functions.user_stats.main(update.message.text))
+
 def echo(update, context):  #pylint: disable=unused-argument
     """Echo the user message."""
     update.message.reply_text("Unrecognized command.")
@@ -111,6 +116,7 @@ def main():
     updater.dispatcher.add_handler(CommandHandler("whoami", whoami))
     updater.dispatcher.add_handler(CommandHandler("trending_users", trending_users))
     updater.dispatcher.add_handler(CommandHandler("suspended_by", suspended))
+    updater.dispatcher.add_handler(CommandHandler("user_stats", user_stats))
     updater.dispatcher.add_handler(CommandHandler("admins_on", admin)) #Command handler
 
     updater.dispatcher.add_handler(MessageHandler(Filters.text, echo)) #Echo unprocessable msgs

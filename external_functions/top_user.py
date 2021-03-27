@@ -15,7 +15,7 @@ def Main(command_string): #pylint: disable=invalid-name
                 api_payload = '{"limit":5, "sort":"+follower"}'
                 api_result = requests.post(api_target, data=api_payload).json()
                 expected_reply = ""
-                expected_title = f"Top 5 users from {instance_url} (Sort by followers):\n"
+                expected_title = f"Top 5 users from {instance_url} (Sorted by followers):\n"
                 expected_lnbreak = " \n"
                 print(api_result)
                 for i in api_result:
