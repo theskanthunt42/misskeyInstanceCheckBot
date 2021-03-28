@@ -48,10 +48,6 @@ def main(command_string):
         # Return Generated content
         return expected_reply
 
-    except Exception as warning_feedback:  #pylint: disable=broad-except
-        if len(command_string) <= 19:
-            print("Invalid input.")
-        else:
-            print(debug_msg)
-            print(warning_feedback)
-            return "Error happened!"
+    except requests.models.complexjson.decoder.JSONDecodeError: return "Unable to parse data."
+    except requests.exceptions.ConnectionError: return "Unable to connect."
+    except Exception as warning_feedback: return debug_msg + warning_feedback  #pylint: disable=broad-except

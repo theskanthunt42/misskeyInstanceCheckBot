@@ -92,5 +92,4 @@ def main(command_string):
             )
         else:
             return "You've lost in the middle of nowhere. Did you misspell anything?"
-    except Exception as warning_feedback:   #pylint: disable=broad-except:
-        return warning_feedback
+    except Exception as warning_feedback: return warning_feedback #pylint: disable=broad-except

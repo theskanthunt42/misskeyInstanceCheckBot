@@ -1,41 +1,22 @@
-"""requests has already included json, an independent json library become no longer compulsory"""
+"""Search blocked domains by a Misskey Instance"""
 import requests
 from external_functions import utils as convert
 
 def Main(command_string): #pylint: disable=invalid-name
     """
-    Function to generate expected reply text to /about {instance}
-    Usuage:
-    external_functions.func_about.Main({source_command})
+    Function to generate expected reply text to /specs {instance}
+    Usage: external_functions.specs.Main(str)
     """
-    if len(command_string) <= 11:
-        reply_text = "Invalid instance url!"
-    else:
-        try:
-            instance_url = command_string.split(" ")[-1].split("//")[-1]
-            instance_availability = requests.get(f"https://{instance_url}").status_code
-            print(instance_availability)
-            if instance_availability == 200:
-                api_target = f"https://{instance_url}/api/server-info/"
-                api_result = requests.post(api_target).json()
-                print(api_result)
+    try:
+        instance_url = command_string.split(" ")[-1].split("//")[-1]
+        api_result = requests.post(f"https://{instance_url}/api/server-info/").json()
+        return (f"Specifications of {instance_url}:\n\n"
+                f"Processor: {api_result['cpu']['model']}\n"
+                f"Installed RAM: {convert.filesize(api_result ['mem']['total'])}\n"
+                f"Storage capacity: {convert.filesize(api_result['fs']['total'])}\n"
+                f"Storage used: {convert.filesize(api_result['fs']['used'])}\n"
+        )
 
-                expected_title = f"Specifications of {instance_url}:\n\n"
-                expected_cpu = f"Processor: {api_result['cpu']['model']}\n"
-                expected_ram = \
-                    f"Installed RAM: {convert.filesize(api_result ['mem']['total'])}\n"
-                expected_diskspace = \
-                    f"Storage capacity: {convert.filesize(api_result['fs']['total'])}\n"
-                expected_diskused = \
-                    f"Storage used: {convert.filesize(api_result['fs']['used'])}\n"
-
-                reply_text = (expected_title
-                                + expected_cpu
-                                + expected_ram
-                                + expected_diskspace
-                                + expected_diskused
-                )
-        except Exception as warning_feedback:   #pylint: disable=broad-except
-            print(warning_feedback)
-            reply_text = "Instance unavailable!"
-    return reply_text
+    except requests.models.complexjson.decoder.JSONDecodeError: return "Unable to parse data."
+    except requests.exceptions.ConnectionError: return "Unable to connect."
+    except Exception as warning_feedback: return warning_feedback  #pylint: disable=broad-except
