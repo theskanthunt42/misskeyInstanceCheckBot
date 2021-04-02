@@ -1,4 +1,4 @@
-"""Placeholder"""
+"""Getting user's status from remote instance"""
 import requests
 from external_functions import utils
 
