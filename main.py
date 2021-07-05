@@ -11,15 +11,17 @@ def start(update, context):  #pylint: disable=unused-argument
     """Reply /start is issued."""
     update.message.reply_text('Hi! Send /help to learn more.')
 
+
 def help(update, context):  #pylint: disable=unused-argument
     #pylint: disable=redefined-builtin
-    """Send a message when the command /help is issued."""
+    """
+    Send a message when the command /help is issued
+    """
     update.message.reply_text(external_functions.manual.main(update.message.text))
 
 def user_stats(update, context):  #pylint: disable=unused-argument
-    #pylint: disable=redefined-builtin
     """Send a message when the command /user_stats is issued."""
-    update.message.reply_text(external_functions.user_stats.main(update.message.text))
+    update.message.reply_text(external_functions.misskey_interactor.user_stats(update.message.text))
 
 def echo(update, context):  #pylint: disable=unused-argument
     """Echo the user message."""
@@ -28,12 +30,12 @@ def echo(update, context):  #pylint: disable=unused-argument
 def whoami(update, context):  #pylint: disable=unused-argument
     """Echo user information"""
     user_info = update.message.from_user
-    echo_dname = f"Hello, {user_info['first_name']} {user_info['last_name']}\n\n"
-    echo_uname = f"Username: {user_info['username']}\n"
-    echo_langue = f"Display language: {user_info['language_code']}\n"
-    echo_uid = f"User ID: {user_info['id']}\n"
-    echo_result = (echo_dname + echo_uname + echo_langue + echo_uid)
-    update.message.reply_text(echo_result)
+    update.message.reply_text(
+        f"Hello, {user_info['first_name']} {user_info['last_name']}\n\n"
+        f"Username: {user_info['username']}\n"
+        f"Display language: {user_info['language_code']}\n"
+        f"User ID: {user_info['id']}\n"
+        )
 
 def error(update, context):  #pylint: disable=unused-argument
     """Log Errors caused by Updates."""
@@ -45,7 +47,7 @@ def ping(update, context):  #pylint: disable=unused-argument
 
 def blocked(update, context):  #pylint: disable=unused-argument
     """List domains blocked by targeted instance."""
-    response_text = external_functions.blocked_domains.Main(update.message.text)
+    response_text = external_functions.misskey_interactor.blocked_domains(update.message.text)
     if len(response_text) <= 4096:
         update.message.reply_text(response_text)
     else:
@@ -55,7 +57,7 @@ def blocked(update, context):  #pylint: disable=unused-argument
 
 def suspended(update, context):  #pylint: disable=unused-argument
     """List domains blocked by targeted instance."""
-    response_text = external_functions.suspended_domains.Main(update.message.text)
+    response_text = external_functions.misskey_interactor.suspended_domains(update.message.text)
     if len(response_text) <= 4096:
         update.message.reply_text(response_text)
     else:
@@ -65,7 +67,7 @@ def suspended(update, context):  #pylint: disable=unused-argument
 
 def specs(update, context):  #pylint: disable=unused-argument
     """List domains blocked by targeted instance."""
-    response_text = external_functions.specs.Main(update.message.text)
+    response_text = external_functions.misskey_interactor.specs(update.message.text)
     if len(response_text) <= 4096:
         update.message.reply_text(response_text)
     else:
@@ -75,7 +77,7 @@ def specs(update, context):  #pylint: disable=unused-argument
 
 def statistics(update, context):  #pylint: disable=unused-argument
     """List domains blocked by targeted instance."""
-    response_text = external_functions.statistics.Main(update.message.text)
+    response_text = external_functions.misskey_interactor.statistics(update.message.text)
     if len(response_text) <= 4096:
         update.message.reply_text(response_text)
     else:
@@ -83,9 +85,18 @@ def statistics(update, context):  #pylint: disable=unused-argument
             text_file.write(response_text)
         update.message.reply_document(open("cache_stats.txt", 'rb'))
 
+
+def show_tools(update, context):  #pylint: disable=unused-argument
+    """List domains blocked by targeted instance."""
+    update.message.reply_text(external_functions.get_github.list_available_repos())
+
+def get_obj_size(update, context):  #pylint: disable=unused-argument
+    """List domains blocked by targeted instance."""
+    update.message.reply_text(external_functions.get_github.get_obj_size(update.message.text))
+
 def admin(update, context):  #pylint: disable=unused-argument
     """List admins on that target instance."""
-    response_text = external_functions.admin.Main(update.message.text)
+    response_text = external_functions.misskey_interactor.list_admins(update.message.text)
     if len(response_text) <= 4096:
         update.message.reply_text(response_text)
     else:
@@ -95,7 +106,7 @@ def admin(update, context):  #pylint: disable=unused-argument
 
 def trending_users(update, context):  #pylint: disable=unused-argument
     """List admins on that target instance."""
-    response_text = external_functions.top_user.Main(update.message.text)
+    response_text = external_functions.misskey_interactor.top_user(update.message.text)
     if len(response_text) <= 4096:
         update.message.reply_text(response_text)
     else:
@@ -104,8 +115,10 @@ def trending_users(update, context):  #pylint: disable=unused-argument
         update.message.reply_document(open("cache_trendings.txt", 'rb'))
 
 def main():
-    """Start the bot."""
-    updater = Updater(external_functions.utils.tokenization(), use_context=True)
+    """
+    start_the_bot
+    """
+    updater = Updater(external_functions.misskey_interactor.kabaformat.tokenization(), use_context=True)
 
     updater.dispatcher.add_handler(CommandHandler("start", start)) #Command handler
     updater.dispatcher.add_handler(CommandHandler("help", help))
@@ -117,6 +130,8 @@ def main():
     updater.dispatcher.add_handler(CommandHandler("trending_users", trending_users))
     updater.dispatcher.add_handler(CommandHandler("suspended_by", suspended))
     updater.dispatcher.add_handler(CommandHandler("user_stats", user_stats))
+    updater.dispatcher.add_handler(CommandHandler("show_tools", show_tools))
+    updater.dispatcher.add_handler(CommandHandler("get_obj_size", get_obj_size))
     updater.dispatcher.add_handler(CommandHandler("admins_on", admin)) #Command handler
 
     updater.dispatcher.add_handler(MessageHandler(Filters.text, echo)) #Echo unprocessable msgs

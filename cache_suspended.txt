@@ -1,0 +1,193 @@
+Instances suspended by misskey.io:
+
+------- fedi.nekojanai.xyz -------
+Description: Pleroma: An efficient and flexible fediverse server
+Software: pleroma
+Version: 2.3.50-224-g745375bd-develop
+Suspended on: 2021-06-13T07:22:11.659Z
+
+------- minedol12.tk -------
+Description: ✨🌎✨ A federated blogging platform ✨🚀✨
+Software: dolphin
+Version: 1.4.0-20210418072831
+Suspended on: 2021-06-11T00:47:55.203Z
+
+------- youjo.love -------
+Description: youjo.love
+Software: pleroma
+Version: 2.3.0-1-gb221d77a
+Suspended on: 2021-07-01T08:44:57.059Z
+
+------- or.a9z.dev -------
+Description: ✨🌎✨ A interplanetary communication platform ✨🚀✨
+Software: misskey
+Version: 12.81.2-c2.1
+Suspended on: 2021-06-03T20:14:01.314Z
+
+------- misskey.kimoty.net -------
+Description: 個人用
+
+Software: misskey
+Version: 12.82.0
+Suspended on: 2021-06-11T10:15:37.432Z
+
+------- def.social -------
+Description: Pleroma: An efficient and flexible fediverse server
+Software: pleroma
+Version: 2.3.0-1-gb221d77a
+Suspended on: 2021-05-13T02:59:57.861Z
+
+------- waifuism.life -------
+Description: For when you're serious, but you're not.
+Software: pleroma
+Version: 2.3.0-1-gb221d77a
+Suspended on: 2021-06-17T13:33:54.794Z
+
+------- 5f47721bd8fa.ngrok.io -------
+Description: Working on WSL2
+Software: misskey
+Version: 12.80.1
+Suspended on: 2021-05-05T07:34:33.657Z
+
+------- msky.herokuapp.com -------
+Description: ✨🌎✨ A interplanetary communication platform ✨🚀✨
+Software: misskey
+Version: 12.79.3
+Suspended on: 2021-05-04T17:49:44.245Z
+
+------- misskey.cyberrex.ml -------
+Description: ✨🌎✨ A interplanetary communication platform ✨🚀✨
+Software: misskey
+Version: 12.79.3
+Suspended on: 2021-05-04T06:36:20.547Z
+
+------- tanoshii.site -------
+Description: たのしいです！
+Software: misskey
+Version: 12.79.2
+Suspended on: 2021-06-03T10:21:37.677Z
+
+------- pl.panthermoderns.org -------
+Description: PantherModerns ActivityPub instance.
+Software: pleroma
+Version: 2.3.50-147-g6c782549-feature-1469-webfinger-expanding
+Suspended on: 2021-05-26T18:20:05.216Z
+
+------- enju.grmnlc.de -------
+Description: Pleroma: An efficient and flexible fediverse server
+Software: pleroma
+Version: 2.3.0-1-gb221d77a
+Suspended on: 2021-04-08T12:22:13.467Z
+
+------- noridev.moe -------
+Description: 이 Misskey는 아직 설정 중이에요. 설정이 모두 끝나면 여러분께 다가갈 수 있을거에요.
+Software: misskey
+Version: 12.75.1
+Suspended on: 2021-04-09T09:45:47.055Z
+
+------- pl.kurusukono.cc -------
+Description: Kuru's single-user instance. Uwa!
+Software: pleroma
+Version: 2.3.0-1-gb221d77a
+Suspended on: 2021-04-06T19:39:12.409Z
+
+------- simkey.net -------
+Description: ✨🌎✨ A federated blogging platform ✨🚀✨
+Software: misskey
+Version: 12.75.1
+Suspended on: 2021-06-02T14:29:03.783Z
+
+------- microblog.r-12.net -------
+Description: None
+Software: None
+Version: None
+Suspended on: 2021-06-03T11:14:01.135Z
+
+------- cloud.tyil.nl -------
+Description: a safe home for all your data
+Software: None
+Version: None
+Suspended on: 2021-03-31T08:44:29.790Z
+
+------- zeonet.xyz -------
+Description: Pleroma: An efficient and flexible fediverse server
+Software: pleroma
+Version: 2.2.2
+Suspended on: 2021-06-17T06:39:15.957Z
+
+------- pl.valkyrie.world -------
+Description: Pleroma: An efficient and flexible fediverse server
+Software: pleroma
+Version: 2.3.0-1-gb221d77a
+Suspended on: 2021-05-12T16:31:06.945Z
+
+------- degenerates.fail -------
+Description: Free Social Media. USA Based. No porn. Support us at https://liberapay.com/degeneratesfail/
+Software: misskey
+Version: 12.81.2
+Suspended on: 2021-05-23T20:36:04.341Z
+
+------- atolla.xyz -------
+Description: 一个公民数字隐私保护试验田。
+Software: misskey
+Version: 12.74.1
+Suspended on: 2021-05-13T13:25:22.210Z
+
+------- 8080-gold-tarsier-fnsbgb2h.ws-us03.gitpod.io -------
+Description: 黒ヰ樹が諸事情でMVCサービス作ることになったためGitpodで試験的に建てたMisskeyサーバーです。Gitpodの仕様上動いたり動かなかったりします。 | @i https://8080-gold-tarsier-fnsbgb2h.ws-us03.gitpod.io/@i Admin | Gitpod Misskey https://acefed.gitlab.io/gitpod-misskey 解説ページ（準備中）
+Software: misskey
+Version: 12.74.1
+Suspended on: 2021-05-05T05:29:28.803Z
+
+------- gitmo.tv -------
+Description: GITMO.TV a federated (ActivityPub) video streaming platform using P2P (BitTorrent) directly in the web browser with WebTorrent and Angular.
+Software: peertube
+Version: 3.1.0
+Suspended on: 2021-06-01T02:01:10.101Z
+
+------- misskey.sylph.space -------
+Description: ✨🌎✨ A federated blogging platform ✨🚀✨
+Software: misskey
+Version: 12.74.1
+Suspended on: 2021-05-13T17:14:39.487Z
+
+------- ms.osanhost.mydns.jp -------
+Description: minetaro12専用インスタンスです
+Software: misskey
+Version: 12.81.2
+Suspended on: 2021-06-06T07:07:19.486Z
+
+------- void.duck.casa -------
+Description: Pleroma: An efficient and flexible fediverse server
+Software: pleroma
+Version: 2.2.50-1061-g9fb8da42-develop
+Suspended on: 2021-03-01T19:01:38.348Z
+
+------- minedon.ml -------
+Description: 341 トゥート, 50 フォロー中, 36 フォロワー Â· そのへんの高校生
+minedon.mlの鯖缶
+Software: mastodon
+Version: 3.3.0
+Suspended on: 2021-03-05T10:19:57.502Z
+
+------- bangdream.tokyo -------
+Description: BanG_Dream!ファンによる日本語圏向けのUnofficial SNSです。
+
+
+現在試験運用中につき、不具合が出る事があるかもしれません。ご了承ください
+何か発見された場合、教えていただけるとうれしいかも。
+
+現在、負荷上昇により500エラーが頻発しており、ご迷惑おかけしております。
+それでもいいよという方のために、あえて登録は開けておきます。（データの保証は期待しないでください。）
+現在ガルパでやっているイベントが終わるぐらいの頃（3/14？）に、長期メンテを始める予定です。アクセス出来なくなったらメンテ始まったと思っていてください。
+重ね重ね、申し訳無いです。🙇
+Software: mastodon
+Version: 3.3.0
+Suspended on: 2021-06-19T12:39:20.125Z
+
+------- onthecouch.xyz -------
+Description: Pleroma: An efficient and flexible fediverse server
+Software: pleroma
+Version: 2.2.2
+Suspended on: 2021-06-28T07:01:47.408Z
+
