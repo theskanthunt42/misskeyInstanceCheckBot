@@ -1,4 +1,4 @@
-"""Search blocked domains by a Misskey Instance"""
+"""Looking for the server specification from given instance"""
 import requests
 from external_functions import utils as convert
 
